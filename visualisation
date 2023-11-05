@@ -1,0 +1,92 @@
+Import+bibliotheques:
+
+from sklearn.manifold import TSNE
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+from sklearn.decomposition import PCA
+from sklearn.datasets import fetch_california_housing
+import time
+
+# Charger le jeu de données "California Housing Prices"
+california_housing = fetch_california_housing()
+X = california_housing.data
+y = california_housing.target
+
+# Réduire la taille du dataset à 1000 échantillons aléatoires
+import numpy as np
+random_indices = np.random.choice(len(X), size=3500, replace=False)
+X_sample = X[random_indices]
+y_sample = y[random_indices]
+
+  -----------------------------------------------------------------------
+  visu AVEC TSNE:
+
+  # Enregistrer le temps de départ
+start_time = time.time()
+
+# Instanciation
+tsne = TSNE(n_components=3) # On peut choisir de réduire à 3 dimensions à plus
+
+# Itérations
+
+X_embedded = tsne.fit_transform(X_sample)
+
+# Résultat
+
+print(X_embedded.shape)
+
+fig = plt.figure()
+
+ax = fig.add_subplot(111, projection='3d')
+
+
+ax.scatter(X_embedded[:,0],X_embedded[:,1],X_embedded[:,2],
+
+     zdir='z',s=40,depthshade=True,c=y_sample)
+
+# Enregistrer le tracé en tant qu'image JPEG
+plt.savefig("plot_3dtsne.jpg")
+
+plt.show()
+
+# Enregistrer le temps à la fin de l'opération
+end_time = time.time()
+
+# Calculer la durée de l'opération en secondes
+elapsed_time = end_time - start_time
+
+# Afficher le temps écoulé
+print("Temps écoulé en secondes :", elapsed_time)
+
+  -----------------------------------------------------------
+  visu avec PCA:
+
+  # Enregistrer le temps de départ
+start_time = time.time()
+
+# Réaliser l'ACP en 3 dimensions
+pca = PCA(n_components=3)
+X_r = pca.fit_transform(X_sample)
+
+# Créer une figure en 3D
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+
+# Tracer les points en 3D avec des couleurs différentes basées sur la valeur cible
+ax.scatter(X_r[:, 0], X_r[:, 1], X_r[:, 2], c=y_sample, cmap='viridis')
+
+# Enregistrer le tracé en tant qu'image JPEG
+plt.savefig("plot_3dpca.jpg")
+            
+plt.show()
+
+# Enregistrer le temps à la fin de l'opération
+end_time = time.time()
+
+# Calculer la durée de l'opération en secondes
+elapsed_time = end_time - start_time
+
+# Afficher le temps écoulé
+print("Temps écoulé en secondes :", elapsed_time)
+
+  
